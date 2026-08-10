@@ -1,0 +1,10 @@
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  color: #9aa4c7;
+  margin-bottom: 6px;
+}

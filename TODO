@@ -1,0 +1,44 @@
+# TODO / Future Work
+
+Thanks for your interest in contributing! 🎉  
+Feel free to work on any item in this list to help improve the project.
+
+---
+
+## Multi-Device Architecture (High Priority)
+
+To support more Bluetooth devices, introduce a **driver (adapter) architecture**.
+
+- Define a generic interface for common actions:
+  - `connect()`, `getData()`, `setTime()`, `setAlarm()`, etc.
+- Implement device-specific drivers that handle Bluetooth communication and data formats
+- Refactor existing logic into this structure
+
+This will make it easier to add support for new devices.
+
+---
+
+## UI & Theme Support
+
+- The project currently supports **dark mode only**.
+- Add a **light and dark modes** theme.
+- Allow users to switch between light and dark modes.
+
+
+---
+
+## Display Estimated Burned Calories
+
+- The app currently displays activity points retrieved from a fitness tracker.
+- Extend this by estimating calories burned based on these points and user profile data.
+- This may include:
+  - Introduce a user profile including attributes such as weight, height, age, and gender.
+  - Use this data to calculate Basal Metabolic Rate (BMR).
+  - Estimate resting calories burned so far today using: BMR × (hours since midnight / 24)
+  - Convert activity points into additional calories using a profile-based formula.
+  - Calculate total calories burned as: resting calories + activity calories
+  - Display the total estimated calories in the UI.
+
+---
+
+Contributions are welcome via pull requests or issues 🚀

@@ -1,0 +1,80 @@
+.container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+}
+
+.burgerButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.8rem;
+  color: #e5e7eb;
+  padding: 0.5rem;
+  transition: transform 0.2s;
+}
+
+.sideMenu {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  width: 250px;
+  bottom: 0;
+  background-color: #0c1430;
+  border-right: 1px solid #243056;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  padding-top: 4rem;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+}
+
+.sideMenu.open {
+  left: 0;
+}
+
+.navLink {
+  padding: 1.2rem 2rem;
+  text-decoration: none;
+  color: #e5e7eb;
+  font-size: 1.2rem;
+  font-weight: 500;
+  border-bottom: 1px solid #243056;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.navLink:hover {
+  background-color: #1a2035;
+  color: #4f7cff;
+}
+
+.menuVersion {
+  margin-top: auto;
+  padding: 20px;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-align: center;
+  border-top: 1px solid #243056;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.overlay.open {
+  opacity: 1;
+  visibility: visible;
+}

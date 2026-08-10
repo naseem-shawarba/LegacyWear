@@ -1,0 +1,46 @@
+{
+  "name": "Legacy Wear",
+  "short_name": "LeWear",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "144x144",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo144.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://res.cloudinary.com/dbwchwxbc/image/upload/v1786201917/legacy_wear_desktop_iz7ovd.png",
+      "sizes": "2560×1440",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Desktop view of the app"
+    },
+    {
+      "src": "https://res.cloudinary.com/dbwchwxbc/image/upload/v1786201917/legacy_wear_mobile_v7strz.png",
+      "sizes": "1500×2668",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile view of the app"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#e5e7eb",
+  "background_color": "#0f172a"
+}

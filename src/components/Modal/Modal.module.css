@@ -1,0 +1,58 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(1px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.card {
+  max-width: 520px;
+  padding: 0px 30px 20px;
+  margin: 20px;
+  border-radius: 12px;
+  background: #020617;
+  border: 1px solid #1e293b;
+  color: #e5e7eb;
+  overflow-y: auto;
+  max-height: 400px;
+}
+
+.card::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 10px;
+}
+
+.card::-webkit-scrollbar-track {
+  background: #020617;
+  border-radius: 10px;
+  margin: 8px 4px;
+}
+
+.card::-webkit-scrollbar-thumb {
+  background-color: #334155;
+  border-radius: 10px;
+  border: 2px solid #020617;
+}
+
+.card::-webkit-scrollbar-thumb:hover {
+  background-color: #475569;
+}
+
+.button {
+  display: block;
+  margin: 20px auto 5px;
+  padding: 12px 24px;
+  background: #2563eb;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: #1d4ed8;
+}

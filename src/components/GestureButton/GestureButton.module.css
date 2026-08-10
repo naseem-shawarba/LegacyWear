@@ -1,0 +1,25 @@
+.gestureBtn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #141d42;
+  border: 1px solid #23346c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #718096;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  outline: none;
+}
+
+.gestureActive {
+  color: #3b82f6;
+  border-color: #3b82f6;
+  background: #1e295d;
+}
+
+.disabled {
+  cursor: not-allowed;
+}

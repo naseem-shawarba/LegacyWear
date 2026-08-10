@@ -1,0 +1,1 @@
+export { BatteryIcon } from "./BatteryIcon";

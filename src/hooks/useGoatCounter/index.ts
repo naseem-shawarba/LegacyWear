@@ -1,0 +1,1 @@
+export { useGoatCounter } from "./useGoatCounter";

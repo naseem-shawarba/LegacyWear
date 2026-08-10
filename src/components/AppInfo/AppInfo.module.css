@@ -1,0 +1,13 @@
+.container h1 {
+  margin-bottom: 16px;
+  text-align: center;
+}
+.container h2 {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.container p {
+  margin-bottom: 12px;
+  line-height: 1.5;
+}

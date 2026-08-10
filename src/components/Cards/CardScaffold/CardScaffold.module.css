@@ -1,0 +1,87 @@
+.card {
+  background: linear-gradient(180deg, #121b4d, #0e1533);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  margin-bottom: 12px;
+  /* overflow: hidden; */
+  transition: all 0.25s ease;
+  width: 370px;
+}
+
+.card.unsupported {
+  background: linear-gradient(180deg, #1b1420, #120c18);
+  border: 1px solid rgba(255, 140, 120, 0.35);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.collapsed .cardContent {
+  display: none;
+}
+
+.cardHeader {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.toggle {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chevron {
+  transition: transform 0.25s ease;
+  padding: 2px 10px;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.collapsed .chevron {
+  transform: rotate(-90deg);
+}
+
+.cardContent {
+  padding: 12px 16px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.message.unsupported {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #cfd7ff;
+  margin-bottom: 16px;
+}
+
+.badge {
+  margin-left: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #aab4ff;
+}

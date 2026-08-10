@@ -1,0 +1,83 @@
+.app {
+  background: radial-gradient(circle at top, #0f172a, #020617);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #e5e7eb;
+  gap: 30px;
+}
+
+.appVersion {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 50px;
+  padding-right: 20px;
+  padding-left: 20px;
+  gap: 25px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer {
+  display: flex;
+  gap: 7px;
+  color: #e5e7eb;
+  margin: 20px 0;
+}
+
+.icon {
+  color: #e5e7eb;
+  cursor: pointer;
+}
+
+input[type="time"],
+input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #243056;
+  background: #0c1430;
+  color: #e6ebff;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+input[type="radio"] {
+  accent-color: #4f7cff;
+}
+
+input[type="checkbox"] {
+  margin-left: 10px;
+  transform: scale(1.2);
+}
+
+input[type="time"]:disabled,
+input[type="number"]:disabled,
+input[type="radio"]:disabled,
+input[type="checkbox"]:disabled {
+  background: #1a2035;
+  border-color: #243056;
+  cursor: not-allowed;
+}

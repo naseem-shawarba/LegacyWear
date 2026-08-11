@@ -34,21 +34,23 @@ jest.mock(
 );
 
 describe("App", () => {
-  it("renders the footer hyperlinks to the GitHub and Reddit profiles", () => {
-    render(<App />);
+  describe("Footer Links", () => {
+    it("renders the footer hyperlinks to the GitHub and Reddit profiles", () => {
+      render(<App />);
 
-    expect(
-      screen.getByText(/developed by naseem shawarba/i),
-    ).toBeInTheDocument();
+      expect(
+        screen.getByText(/developed by naseem shawarba/i),
+      ).toBeInTheDocument();
 
-    const githubLink = document.querySelector(
-      'a[href="https://github.com/naseem-shawarba/LegacyWear"]',
-    );
-    const redditLink = document.querySelector(
-      'a[href="https://www.reddit.com/user/shinysn0w/"]',
-    );
+      const githubLink = document.querySelector(
+        'a[href="https://github.com/naseem-shawarba/LegacyWear"]',
+      );
+      const redditLink = document.querySelector(
+        'a[href="https://www.reddit.com/user/shinysn0w/"]',
+      );
 
-    expect(githubLink).toBeInTheDocument();
-    expect(redditLink).toBeInTheDocument();
+      expect(githubLink).toBeInTheDocument();
+      expect(redditLink).toBeInTheDocument();
+    });
   });
 });

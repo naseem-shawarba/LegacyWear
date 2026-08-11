@@ -1,5 +1,4 @@
-import { act } from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import { Snackbar } from "./Snackbar";
 
 describe("Snackbar", () => {
@@ -8,19 +7,44 @@ describe("Snackbar", () => {
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
+    jest.clearAllTimers();
     jest.useRealTimers();
   });
 
-  it("renders the message and removes itself after the duration", () => {
-    render(<Snackbar message="Saved" duration={1000} />);
+  describe("Rendering", () => {
+    it("renders the provided message initially", () => {
+      render(<Snackbar message="Success saved!" />);
+      expect(screen.getByText("Success saved!")).toBeInTheDocument();
+    });
+  });
 
-    expect(screen.getByText("Saved")).toBeInTheDocument();
+  describe("Timeout Behavior", () => {
+    it("hides the snackbar after the default 9000ms duration", () => {
+      render(<Snackbar message="Timeout test" />);
 
-    act(() => {
-      jest.advanceTimersByTime(1000);
+      expect(screen.getByText("Timeout test")).toBeInTheDocument();
+
+      act(() => {
+        jest.advanceTimersByTime(9000);
+      });
+
+      expect(screen.queryByText("Timeout test")).not.toBeInTheDocument();
     });
 
-    expect(screen.queryByText("Saved")).not.toBeInTheDocument();
+    it("hides the snackbar after a custom duration", () => {
+      render(<Snackbar message="Custom timeout" duration={3000} />);
+
+      act(() => {
+        jest.advanceTimersByTime(2999);
+      });
+      // Should still be visible right before timeout
+      expect(screen.getByText("Custom timeout")).toBeInTheDocument();
+
+      act(() => {
+        jest.advanceTimersByTime(1);
+      });
+      // Should disappear exactly at 3000ms
+      expect(screen.queryByText("Custom timeout")).not.toBeInTheDocument();
+    });
   });
 });

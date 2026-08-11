@@ -58,60 +58,115 @@ const renderWithFormValues = (
 };
 
 describe("NudgeMoveCard", () => {
-  it("renders the move reminder inputs and opens the card", async () => {
-    const user = userEvent.setup();
-    const onOpenCardClick = jest.fn();
-    const { container } = renderWithForm({ onOpenCardClick });
+  describe("Rendering", () => {
+    it("renders the move reminder inputs and opens the card", async () => {
+      const user = userEvent.setup();
+      const onOpenCardClick = jest.fn();
+      const { container } = renderWithForm({ onOpenCardClick });
 
-    expect(screen.getByText("Nudge Move")).toBeInTheDocument();
-    expect(container.querySelectorAll('input[type="time"]').length).toBe(2);
-    expect(screen.getByRole("checkbox", { name: /enabled/i })).toBeChecked();
+      expect(screen.getByText("Nudge Move")).toBeInTheDocument();
+      expect(container.querySelectorAll('input[type="time"]').length).toBe(2);
+      expect(screen.getByRole("checkbox", { name: /enabled/i })).toBeChecked();
 
-    await user.click(screen.getByText("Nudge Move"));
-    expect(onOpenCardClick).toHaveBeenCalledWith("nudgeMove");
+      await user.click(screen.getByText("Nudge Move"));
+      expect(onOpenCardClick).toHaveBeenCalledWith("nudgeMove");
+    });
   });
 
-  it("disables all controls when the card is read only", () => {
-    const { container } = renderWithForm({
-      isDisabled: true,
-      isUnsupported: true,
+  describe("Interactions", () => {
+    it("updates the interval input value when changed", async () => {
+      const user = userEvent.setup();
+      const { container } = renderWithForm();
+
+      const intervalInput = container.querySelector(
+        'input[type="number"]',
+      ) as HTMLInputElement;
+      await user.clear(intervalInput);
+      await user.type(intervalInput, "30");
+
+      expect(intervalInput).toHaveValue(30);
     });
 
-    expect(container.querySelectorAll('input[type="time"]').length).toBe(2);
-    expect(container.querySelector('input[type="number"]')).toBeDisabled();
-    expect(screen.getByRole("checkbox", { name: /enabled/i })).toBeDisabled();
+    it("dynamically disables/enables time and interval fields when the enabled checkbox is toggled", async () => {
+      const user = userEvent.setup();
+      const { container } = renderWithForm();
+
+      const timeInputs = container.querySelectorAll('input[type="time"]');
+      const intervalInput = container.querySelector(
+        'input[type="number"]',
+      ) as HTMLInputElement;
+      const enabledCheckbox = screen.getByRole("checkbox", {
+        name: /enabled/i,
+      });
+
+      expect(timeInputs[0]).toBeEnabled();
+      expect(timeInputs[1]).toBeEnabled();
+      expect(intervalInput).toBeEnabled();
+
+      await user.click(enabledCheckbox);
+
+      expect(timeInputs[0]).toBeDisabled();
+      expect(timeInputs[1]).toBeDisabled();
+      expect(intervalInput).toBeDisabled();
+    });
   });
 
-  it("keeps all editable fields enabled when nudge move is turned on", () => {
-    const { container } = renderWithFormValues({
-      ...defaultValues,
-      nudgeMove: {
-        startTime: "09:00",
-        endTime: "17:00",
-        interval: 15,
-        isEnabled: true,
-      },
+  describe("Read-Only & Disabled States", () => {
+    it("disables all controls when the card is read only", () => {
+      const { container } = renderWithForm({
+        isDisabled: true,
+        isUnsupported: true,
+      });
+
+      expect(container.querySelectorAll('input[type="time"]').length).toBe(2);
+      expect(
+        container.querySelectorAll('input[type="time"]')[0],
+      ).toBeDisabled();
+      expect(
+        container.querySelectorAll('input[type="time"]')[1],
+      ).toBeDisabled();
+      expect(container.querySelector('input[type="number"]')).toBeDisabled();
+      expect(screen.getByRole("checkbox", { name: /enabled/i })).toBeDisabled();
     });
 
-    expect(container.querySelector('input[type="time"]')).toBeEnabled();
-    expect(container.querySelectorAll('input[type="time"]').length).toBe(2);
-    expect(container.querySelector('input[type="number"]')).toBeEnabled();
-    expect(screen.getByRole("checkbox", { name: /enabled/i })).toBeEnabled();
-  });
+    it("keeps all editable fields enabled when nudge move is turned on initially", () => {
+      const { container } = renderWithFormValues({
+        ...defaultValues,
+        nudgeMove: {
+          startTime: "09:00",
+          endTime: "17:00",
+          interval: 15,
+          isEnabled: true,
+        },
+      });
 
-  it("disables the time and interval fields when nudge move is turned off", () => {
-    const { container } = renderWithFormValues({
-      ...defaultValues,
-      nudgeMove: {
-        startTime: "09:00",
-        endTime: "17:00",
-        interval: 15,
-        isEnabled: false,
-      },
+      expect(container.querySelectorAll('input[type="time"]')[0]).toBeEnabled();
+      expect(container.querySelectorAll('input[type="time"]')[1]).toBeEnabled();
+      expect(container.querySelectorAll('input[type="time"]').length).toBe(2);
+      expect(container.querySelector('input[type="number"]')).toBeEnabled();
+      expect(screen.getByRole("checkbox", { name: /enabled/i })).toBeEnabled();
     });
 
-    expect(container.querySelectorAll('input[type="time"]').length).toBe(2);
-    expect(container.querySelector('input[type="number"]')).toBeDisabled();
-    expect(screen.getByRole("checkbox", { name: /enabled/i })).toBeEnabled();
+    it("disables the time and interval fields when nudge move is turned off initially", () => {
+      const { container } = renderWithFormValues({
+        ...defaultValues,
+        nudgeMove: {
+          startTime: "09:00",
+          endTime: "17:00",
+          interval: 15,
+          isEnabled: false,
+        },
+      });
+
+      expect(
+        container.querySelectorAll('input[type="time"]')[0],
+      ).toBeDisabled();
+      expect(
+        container.querySelectorAll('input[type="time"]')[1],
+      ).toBeDisabled();
+      expect(container.querySelectorAll('input[type="time"]').length).toBe(2);
+      expect(container.querySelector('input[type="number"]')).toBeDisabled();
+      expect(screen.getByRole("checkbox", { name: /enabled/i })).toBeEnabled();
+    });
   });
 });

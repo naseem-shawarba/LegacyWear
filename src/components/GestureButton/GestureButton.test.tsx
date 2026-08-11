@@ -1,59 +1,81 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { GestureButton } from "./GestureButton";
+import React from "react";
 
 describe("GestureButton", () => {
-  it("renders disabled state by default with slash line and enable title", () => {
-    render(<GestureButton />);
+  describe("Rendering and Styling", () => {
+    it("renders default state with slash line and enable title", () => {
+      render(<GestureButton />);
+      const button = screen.getByRole("button", { name: "Enable Gestures" });
 
-    const button = screen.getByRole("button", { name: "Enable Gestures" });
-    expect(button).toBeInTheDocument();
+      expect(button).toBeInTheDocument();
+      expect(button).toBeEnabled();
+      expect(button.querySelector("line")).toBeInTheDocument();
+      expect(button.className).not.toContain("gestureActive");
+    });
 
-    const line = button.querySelector("line");
-    expect(line).toBeInTheDocument();
+    it("renders active state when isListeningToGestures is true", () => {
+      render(<GestureButton isListeningToGestures={true} />);
+      const button = screen.getByRole("button", { name: "Disable Gestures" });
+
+      expect(button).toBeInTheDocument();
+      expect(button.querySelector("line")).not.toBeInTheDocument();
+      expect(button.className).toContain("gestureActive");
+    });
+
+    it("applies the disabled attribute and class when isDisabled is true", () => {
+      render(<GestureButton isDisabled={true} />);
+      const button = screen.getByRole("button");
+
+      expect(button).toBeDisabled();
+      expect(button.className).toContain("disabled");
+    });
   });
 
-  it("renders active state when isListeningToGestures is true", () => {
-    render(<GestureButton isListeningToGestures={true} />);
+  describe("Interactions", () => {
+    it("triggers onClick when clicked", async () => {
+      const handleClick = jest.fn();
+      const user = userEvent.setup();
+      render(<GestureButton onClick={handleClick} />);
 
-    const button = screen.getByRole("button", { name: "Disable Gestures" });
-    expect(button).toBeInTheDocument();
+      await user.click(screen.getByRole("button"));
+      expect(handleClick).toHaveBeenCalledTimes(1);
+    });
 
-    const line = button.querySelector("line");
-    expect(line).not.toBeInTheDocument();
-  });
+    it("does not trigger onClick when disabled", async () => {
+      const handleClick = jest.fn();
+      const user = userEvent.setup();
+      render(<GestureButton onClick={handleClick} isDisabled={true} />);
 
-  it("triggers onClick when clicked", async () => {
-    const handleClick = jest.fn();
-    const user = userEvent.setup();
+      await user.click(screen.getByRole("button"));
+      expect(handleClick).not.toHaveBeenCalled();
+    });
 
-    render(<GestureButton onClick={handleClick} />);
+    it("stops click propagation to parent elements", async () => {
+      const handleParentClick = jest.fn();
+      const handleButtonClick = jest.fn();
+      const user = userEvent.setup();
 
-    await user.click(screen.getByRole("button"));
-    expect(handleClick).toHaveBeenCalledTimes(1);
-  });
+      render(
+        <div onClick={handleParentClick}>
+          <GestureButton onClick={handleButtonClick} />
+        </div>,
+      );
 
-  it("stops click propagation to parent elements", async () => {
-    const handleParentClick = jest.fn();
-    const handleButtonClick = jest.fn();
-    const user = userEvent.setup();
+      await user.click(screen.getByRole("button"));
 
-    render(
-      <div onClick={handleParentClick}>
-        <GestureButton onClick={handleButtonClick} />
-      </div>,
-    );
+      expect(handleButtonClick).toHaveBeenCalledTimes(1);
+      expect(handleParentClick).not.toHaveBeenCalled();
+    });
 
-    await user.click(screen.getByRole("button"));
+    it("handles click safely when onClick is not provided", async () => {
+      const user = userEvent.setup();
+      render(<GestureButton />);
 
-    expect(handleButtonClick).toHaveBeenCalledTimes(1);
-    expect(handleParentClick).not.toHaveBeenCalled();
-  });
-
-  it("handles click safely when onClick is not provided", async () => {
-    const user = userEvent.setup();
-    render(<GestureButton />);
-
-    await expect(user.click(screen.getByRole("button"))).resolves.not.toThrow();
+      await expect(
+        user.click(screen.getByRole("button")),
+      ).resolves.not.toThrow();
+    });
   });
 });

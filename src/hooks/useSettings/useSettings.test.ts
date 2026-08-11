@@ -55,9 +55,30 @@ describe("useSettings", () => {
     expect(console.warn).toHaveBeenCalled();
   });
 
+  it("handles localStorage.getItem throwing an error on read", () => {
+    jest.spyOn(console, "warn").mockImplementation(() => {});
+    jest.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("SecurityError");
+    });
+
+    const { result } = renderHook(() => useSettings());
+
+    expect(result.current.methods.getValues()).toEqual(FORM_DEFAULT_VALUES);
+    expect(console.warn).toHaveBeenCalledWith(
+      "Discarding unreadable persisted settings",
+      expect.any(Error),
+    );
+  });
+
+  it("handles non-object JSON values in localStorage", () => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, "12345");
+
+    const { result } = renderHook(() => useSettings());
+
+    expect(result.current.methods.getValues()).toEqual(FORM_DEFAULT_VALUES);
+  });
+
   it("persists and resets the dirty state after a successful send", () => {
-    // react-hook-form's formState is a proxy: it only tracks isDirty if the
-    // field is read during render, which is how Home consumes it.
     const { result } = renderHook(() => {
       const settings = useSettings();
       return { ...settings, isDirty: settings.methods.formState.isDirty };

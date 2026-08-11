@@ -18,10 +18,14 @@ const defaultValues: FormValues = {
 
 const FormWrapper = ({
   props,
+  values,
 }: {
   props?: Partial<React.ComponentProps<typeof DailyActivityGoalCard>>;
+  values?: FormValues;
 }) => {
-  const methods = useForm<FormValues>({ defaultValues });
+  const methods = useForm<FormValues>({
+    defaultValues: values ?? defaultValues,
+  });
 
   return (
     <FormProvider {...methods}>
@@ -37,26 +41,57 @@ const FormWrapper = ({
 
 const renderWithForm = (
   props: Partial<React.ComponentProps<typeof DailyActivityGoalCard>> = {},
+  values?: FormValues,
 ) => {
-  return render(<FormWrapper props={props} />);
+  return render(<FormWrapper props={props} values={values} />);
 };
 
 describe("DailyActivityGoalCard", () => {
-  it("renders the daily goal title and input", async () => {
-    const user = userEvent.setup();
-    const onOpenCardClick = jest.fn();
-    const { container } = renderWithForm({ onOpenCardClick });
+  describe("Rendering", () => {
+    it("renders the daily goal title and input", async () => {
+      const user = userEvent.setup();
+      const onOpenCardClick = jest.fn();
+      const { container } = renderWithForm({ onOpenCardClick });
 
-    expect(screen.getByText("Daily Activity Goal")).toBeInTheDocument();
-    expect(container.querySelector('input[type="number"]')).toBeInTheDocument();
+      expect(screen.getByText("Daily Activity Goal")).toBeInTheDocument();
+      expect(
+        container.querySelector('input[type="number"]'),
+      ).toBeInTheDocument();
 
-    await user.click(screen.getByText("Daily Activity Goal"));
-    expect(onOpenCardClick).toHaveBeenCalledWith("dailyActivityGoal");
+      await user.click(screen.getByText("Daily Activity Goal"));
+      expect(onOpenCardClick).toHaveBeenCalledWith("dailyActivityGoal");
+    });
   });
 
-  it("disables the points input when the card is disabled", () => {
-    const { container } = renderWithForm({ isDisabled: true });
+  describe("Interactions", () => {
+    it("updates the points input value when changed", async () => {
+      const user = userEvent.setup();
+      const { container } = renderWithForm();
 
-    expect(container.querySelector('input[type="number"]')).toBeDisabled();
+      const input = container.querySelector(
+        'input[type="number"]',
+      ) as HTMLInputElement;
+      await user.clear(input);
+      await user.type(input, "2500");
+
+      expect(input).toHaveValue(2500);
+    });
+  });
+
+  describe("Disabled & Unsupported States", () => {
+    it("disables the points input when the card is disabled", () => {
+      const { container } = renderWithForm({ isDisabled: true });
+
+      expect(container.querySelector('input[type="number"]')).toBeDisabled();
+    });
+
+    it("renders unsupported message and badge when isUnsupported is true", () => {
+      renderWithForm({ isUnsupported: true });
+
+      expect(screen.getByText("Not supported")).toBeInTheDocument();
+      expect(
+        screen.getByText(/This feature is not supported on this device/i),
+      ).toBeInTheDocument();
+    });
   });
 });

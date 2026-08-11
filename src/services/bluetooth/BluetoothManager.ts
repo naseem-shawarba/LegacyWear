@@ -48,7 +48,7 @@ class BluetoothManager {
     if (!this.server) throw new Error("No GATT server");
 
     this.service = await this.server.getPrimaryService(PRIMARY_SERVICE_UUID);
-
+    if (!this.service) throw new Error("Primary service not found");
     this.commandCharacteristic = await this.service.getCharacteristic(
       COMMAND_CHARACTERISTIC_UUID,
     );

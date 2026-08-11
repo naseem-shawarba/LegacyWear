@@ -3,29 +3,45 @@ import userEvent from "@testing-library/user-event";
 import { Modal } from "./Modal";
 
 describe("Modal", () => {
-  it("renders its children and calls the action handler", async () => {
-    const user = userEvent.setup();
-    const onClick = jest.fn();
+  describe("Visibility and Rendering", () => {
+    it("returns null when isOpen is false", () => {
+      const { container } = render(
+        <Modal isOpen={false} onClick={jest.fn()} buttonLabel="Continue">
+          <span>Hidden</span>
+        </Modal>,
+      );
 
-    render(
-      <Modal isOpen={true} onClick={onClick} buttonLabel="Continue">
-        <p>Modal body</p>
-      </Modal>,
-    );
+      expect(container).toBeEmptyDOMElement();
+      expect(screen.queryByText("Hidden")).not.toBeInTheDocument();
+    });
 
-    expect(screen.getByText("Modal body")).toBeInTheDocument();
+    it("renders children and the dynamic button label when isOpen is true", () => {
+      render(
+        <Modal isOpen={true} onClick={jest.fn()} buttonLabel="Accept Terms">
+          <p>Modal body content</p>
+        </Modal>,
+      );
 
-    await user.click(screen.getByRole("button", { name: /continue/i }));
-    expect(onClick).toHaveBeenCalledTimes(1);
+      expect(screen.getByText("Modal body content")).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /accept terms/i }),
+      ).toBeInTheDocument();
+    });
   });
 
-  it("returns null when closed", () => {
-    const { container } = render(
-      <Modal isOpen={false} onClick={jest.fn()} buttonLabel="Continue">
-        <span>Hidden</span>
-      </Modal>,
-    );
+  describe("Interactions", () => {
+    it("calls the onClick action handler when the button is clicked", async () => {
+      const user = userEvent.setup();
+      const handleClick = jest.fn();
 
-    expect(container).toBeEmptyDOMElement();
+      render(
+        <Modal isOpen={true} onClick={handleClick} buttonLabel="Continue">
+          <p>Modal body</p>
+        </Modal>,
+      );
+
+      await user.click(screen.getByRole("button", { name: /continue/i }));
+      expect(handleClick).toHaveBeenCalledTimes(1);
+    });
   });
 });

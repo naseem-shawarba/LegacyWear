@@ -6,9 +6,11 @@ jest.mock("../../components", () => ({
 }));
 
 describe("About", () => {
-  it("renders the app info content", () => {
-    render(<About />);
+  describe("Rendering", () => {
+    it("renders the app info content", () => {
+      render(<About />);
 
-    expect(screen.getByTestId("app-info")).toBeInTheDocument();
+      expect(screen.getByTestId("app-info")).toBeInTheDocument();
+    });
   });
 });

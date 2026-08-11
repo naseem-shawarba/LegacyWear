@@ -53,81 +53,127 @@ const renderWithFormValues = (
 };
 
 describe("PreferencesCard", () => {
-  it("renders the preference controls and calls the opener when the title is clicked", async () => {
-    const user = userEvent.setup();
-    const onOpenCardClick = jest.fn();
-    renderWithForm({ onOpenCardClick });
+  describe("Rendering", () => {
+    it("renders the preference controls and calls the opener when the title is clicked", async () => {
+      const user = userEvent.setup();
+      const onOpenCardClick = jest.fn();
+      renderWithForm({ onOpenCardClick });
 
-    expect(screen.getByText("Preferences")).toBeInTheDocument();
-    expect(screen.getByRole("checkbox", { name: /show time/i })).toBeChecked();
-    expect(
-      screen.getByRole("radio", { name: /show time first/i }),
-    ).toBeChecked();
+      expect(screen.getByText("Preferences")).toBeInTheDocument();
+      expect(
+        screen.getByRole("checkbox", { name: /show time/i }),
+      ).toBeChecked();
+      expect(
+        screen.getByRole("radio", { name: /show time first/i }),
+      ).toBeChecked();
 
-    await user.click(screen.getByText("Preferences"));
-    expect(onOpenCardClick).toHaveBeenCalledWith("preferences");
+      await user.click(screen.getByText("Preferences"));
+      expect(onOpenCardClick).toHaveBeenCalledWith("preferences");
+    });
   });
 
-  it("disables the controls when the card is disabled", () => {
-    renderWithForm({ isDisabled: true });
+  describe("Interactions", () => {
+    it("updates the selected display order when a different radio is clicked", async () => {
+      const user = userEvent.setup();
+      renderWithForm();
 
-    expect(screen.getByRole("checkbox", { name: /show time/i })).toBeDisabled();
-    expect(
-      screen.getByRole("radio", { name: /show time first/i }),
-    ).toBeDisabled();
-    expect(
-      screen.getByRole("radio", { name: /show progress first/i }),
-    ).toBeDisabled();
-  });
+      const progressFirstRadio = screen.getByRole("radio", {
+        name: /show progress first/i,
+      });
 
-  it("keeps the display order radios enabled when show time is enabled", () => {
-    renderWithFormValues({
-      ...defaultValues,
-      preferences: {
-        showTime: true,
-        showTimeFirst: true,
-        isTripleTapEnabled: false,
-      },
+      expect(progressFirstRadio).not.toBeChecked();
+      await user.click(progressFirstRadio);
+      expect(progressFirstRadio).toBeChecked();
     });
 
-    expect(screen.getByRole("checkbox", { name: /show time/i })).toBeEnabled();
-    expect(
-      screen.getByRole("radio", { name: /show time first/i }),
-    ).toBeEnabled();
-    expect(
-      screen.getByRole("radio", { name: /show progress first/i }),
-    ).toBeEnabled();
+    it("dynamically disables/enables display order radios when show time checkbox is toggled", async () => {
+      const user = userEvent.setup();
+      renderWithForm();
+
+      const showTimeCheckbox = screen.getByRole("checkbox", {
+        name: /show time/i,
+      });
+      const showTimeFirstRadio = screen.getByRole("radio", {
+        name: /show time first/i,
+      });
+      const progressFirstRadio = screen.getByRole("radio", {
+        name: /show progress first/i,
+      });
+
+      expect(showTimeFirstRadio).toBeEnabled();
+      expect(progressFirstRadio).toBeEnabled();
+
+      await user.click(showTimeCheckbox);
+
+      expect(showTimeFirstRadio).toBeDisabled();
+      expect(progressFirstRadio).toBeDisabled();
+    });
   });
 
-  it("disables the display order radios when show time is disabled", () => {
-    renderWithFormValues({
-      ...defaultValues,
-      preferences: {
-        showTime: false,
-        showTimeFirst: true,
-        isTripleTapEnabled: false,
-      },
+  describe("Read-Only & Unsupported States", () => {
+    it("disables the controls when the card is disabled", () => {
+      renderWithForm({ isDisabled: true });
+
+      expect(
+        screen.getByRole("checkbox", { name: /show time/i }),
+      ).toBeDisabled();
+      expect(
+        screen.getByRole("radio", { name: /show time first/i }),
+      ).toBeDisabled();
+      expect(
+        screen.getByRole("radio", { name: /show progress first/i }),
+      ).toBeDisabled();
     });
 
-    expect(screen.getByRole("checkbox", { name: /show time/i })).toBeEnabled();
-    expect(
-      screen.getByRole("radio", { name: /show time first/i }),
-    ).toBeDisabled();
-    expect(
-      screen.getByRole("radio", { name: /show progress first/i }),
-    ).toBeDisabled();
-  });
+    it("renders unsupported message and badge when isUnsupported is true", () => {
+      renderWithForm({ isUnsupported: true });
 
-  it("updates the selected display order when a different radio is clicked", async () => {
-    const user = userEvent.setup();
-    renderWithForm();
-
-    const progressFirstRadio = screen.getByRole("radio", {
-      name: /show progress first/i,
+      expect(screen.getByText("Not supported")).toBeInTheDocument();
+      expect(
+        screen.getByText(/This feature is not supported on this device/i),
+      ).toBeInTheDocument();
     });
 
-    expect(progressFirstRadio).not.toBeChecked();
-    await user.click(progressFirstRadio);
-    expect(progressFirstRadio).toBeChecked();
+    it("keeps the display order radios enabled when show time is enabled initially", () => {
+      renderWithFormValues({
+        ...defaultValues,
+        preferences: {
+          showTime: true,
+          showTimeFirst: true,
+          isTripleTapEnabled: false,
+        },
+      });
+
+      expect(
+        screen.getByRole("checkbox", { name: /show time/i }),
+      ).toBeEnabled();
+      expect(
+        screen.getByRole("radio", { name: /show time first/i }),
+      ).toBeEnabled();
+      expect(
+        screen.getByRole("radio", { name: /show progress first/i }),
+      ).toBeEnabled();
+    });
+
+    it("disables the display order radios when show time is disabled initially", () => {
+      renderWithFormValues({
+        ...defaultValues,
+        preferences: {
+          showTime: false,
+          showTimeFirst: true,
+          isTripleTapEnabled: false,
+        },
+      });
+
+      expect(
+        screen.getByRole("checkbox", { name: /show time/i }),
+      ).toBeEnabled();
+      expect(
+        screen.getByRole("radio", { name: /show time first/i }),
+      ).toBeDisabled();
+      expect(
+        screen.getByRole("radio", { name: /show progress first/i }),
+      ).toBeDisabled();
+    });
   });
 });

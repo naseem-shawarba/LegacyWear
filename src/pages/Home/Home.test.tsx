@@ -129,89 +129,155 @@ jest.mock("../../components", () => {
 });
 
 describe("Home", () => {
+  beforeAll(() => {
+    window.addEventListener("submit", (e) => e.preventDefault());
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     window.history.pushState({}, "", "/");
   });
 
-  it("wires the primary page actions and submits settings", async () => {
-    const user = userEvent.setup();
-    render(<Home />);
+  describe("Rendering & Primary Actions", () => {
+    it("wires the primary page actions and submits settings", async () => {
+      const user = userEvent.setup();
+      render(<Home />);
 
-    expect(screen.getByTestId("alarm-card")).toHaveAttribute(
-      "data-open",
-      "true",
-    );
-    expect(screen.getByTestId("nudgeMove-card")).toHaveAttribute(
-      "data-open",
-      "false",
-    );
-    expect(
-      screen.getByRole("button", { name: /disconnect device/i }),
-    ).toBeEnabled();
-    expect(screen.getByRole("button", { name: /save changes/i })).toBeEnabled();
+      expect(screen.getByTestId("alarm-card")).toHaveAttribute(
+        "data-open",
+        "true",
+      );
+      expect(screen.getByTestId("nudgeMove-card")).toHaveAttribute(
+        "data-open",
+        "false",
+      );
+      expect(
+        screen.getByRole("button", { name: /disconnect device/i }),
+      ).toBeEnabled();
+      expect(
+        screen.getByRole("button", { name: /save changes/i }),
+      ).toBeEnabled();
 
-    await user.click(screen.getByRole("button", { name: /nudge move/i }));
-    expect(screen.getByTestId("alarm-card")).toHaveAttribute(
-      "data-open",
-      "false",
-    );
-    expect(screen.getByTestId("nudgeMove-card")).toHaveAttribute(
-      "data-open",
-      "true",
-    );
+      await user.click(screen.getByRole("button", { name: /nudge move/i }));
+      expect(screen.getByTestId("alarm-card")).toHaveAttribute(
+        "data-open",
+        "false",
+      );
+      expect(screen.getByTestId("nudgeMove-card")).toHaveAttribute(
+        "data-open",
+        "true",
+      );
 
-    await user.click(screen.getByRole("button", { name: /device overview/i }));
-    expect(mockRefreshDeviceInfo).toHaveBeenCalledTimes(1);
+      await user.click(
+        screen.getByRole("button", { name: /device overview/i }),
+      );
+      expect(mockRefreshDeviceInfo).toHaveBeenCalledTimes(1);
 
-    await user.click(
-      screen.getByRole("button", { name: /disconnect device/i }),
-    );
-    expect(mockDisconnect).toHaveBeenCalledTimes(1);
+      await user.click(
+        screen.getByRole("button", { name: /disconnect device/i }),
+      );
+      expect(mockDisconnect).toHaveBeenCalledTimes(1);
+    });
+
+    it("submits the form when save changes is clicked", async () => {
+      const user = userEvent.setup();
+      render(<Home />);
+
+      await user.click(screen.getByRole("button", { name: /save changes/i }));
+      expect(mockHandleSubmit).toHaveBeenCalled();
+    });
   });
 
-  it.skip("does not expose the dev tools toggle without the query flag", async () => {});
+  describe("Developer Tools Environments & Flags", () => {
+    const originalEnv = process.env.NODE_ENV;
 
-  it("hands the shared bluetooth state and sender down to DevTools", async () => {
-    const user = userEvent.setup();
-    window.history.pushState({}, "", "/?devTools=1");
-
-    render(<Home />);
-    const toggleButton = screen.getByRole("button", {
-      name: /show dev tools/i,
+    afterEach(() => {
+      (process.env as any).NODE_ENV = originalEnv;
     });
-    await user.click(toggleButton);
 
-    expect(screen.getByTestId("dev-tools")).toHaveAttribute(
-      "data-connected",
-      "true",
-    );
-    expect(screen.getByTestId("dev-tools")).toHaveAttribute(
-      "data-sending",
-      "false",
-    );
+    it("exposes the dev tools toggle in production when query flag is there", async () => {
+      (process.env as any).NODE_ENV = "production";
+      window.history.pushState({}, "", "/?dev=true");
 
-    await user.click(screen.getByRole("button", { name: /send selected/i }));
-    expect(mockSendPayloads).toHaveBeenCalledWith([[1, 2, 3]]);
+      render(<Home />);
+      expect(
+        screen.getByRole("button", { name: /show dev tools/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("does not expose the dev tools toggle in production without query flag", async () => {
+      (process.env as any).NODE_ENV = "production";
+      window.history.pushState({}, "", "/");
+
+      render(<Home />);
+      expect(
+        screen.queryByRole("button", { name: /show dev tools/i }),
+      ).not.toBeInTheDocument();
+    });
+
+    it("exposes the dev tools toggle in development with query flag", async () => {
+      (process.env as any).NODE_ENV = "development";
+      window.history.pushState({}, "", "/?dev=true");
+
+      render(<Home />);
+      expect(
+        screen.getByRole("button", { name: /show dev tools/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("exposes the dev tools toggle in development without query flag", async () => {
+      (process.env as any).NODE_ENV = "development";
+      window.history.pushState({}, "", "/");
+
+      render(<Home />);
+      expect(
+        screen.getByRole("button", { name: /show dev tools/i }),
+      ).toBeInTheDocument();
+    });
   });
 
-  it("toggles between the settings form and dev tools", async () => {
-    const user = userEvent.setup();
-    window.history.pushState({}, "", "/?dev=true");
+  describe("Developer Tools Interaction & State", () => {
+    it("hands the shared bluetooth state and sender down to DevTools", async () => {
+      const user = userEvent.setup();
+      window.history.pushState({}, "", "/?devTools=1");
 
-    render(<Home />);
+      render(<Home />);
+      const toggleButton = screen.getByRole("button", {
+        name: /show dev tools/i,
+      });
+      await user.click(toggleButton);
 
-    const toggleButton = screen.getByRole("button", {
-      name: /show dev tools/i,
+      expect(screen.getByTestId("dev-tools")).toHaveAttribute(
+        "data-connected",
+        "true",
+      );
+      expect(screen.getByTestId("dev-tools")).toHaveAttribute(
+        "data-sending",
+        "false",
+      );
+
+      await user.click(screen.getByRole("button", { name: /send selected/i }));
+      expect(mockSendPayloads).toHaveBeenCalledWith([[1, 2, 3]]);
     });
-    await user.click(toggleButton);
 
-    expect(screen.getByTestId("dev-tools")).toBeInTheDocument();
-    expect(screen.queryByTestId("alarm-card")).not.toBeInTheDocument();
+    it("toggles between the settings form and dev tools", async () => {
+      const user = userEvent.setup();
+      window.history.pushState({}, "", "/?dev=true");
 
-    await user.click(screen.getByRole("button", { name: /show form/i }));
+      render(<Home />);
 
-    expect(screen.queryByTestId("dev-tools")).not.toBeInTheDocument();
-    expect(screen.getByTestId("alarm-card")).toBeInTheDocument();
+      const toggleButton = screen.getByRole("button", {
+        name: /show dev tools/i,
+      });
+      await user.click(toggleButton);
+
+      expect(screen.getByTestId("dev-tools")).toBeInTheDocument();
+      expect(screen.queryByTestId("alarm-card")).not.toBeInTheDocument();
+
+      await user.click(screen.getByRole("button", { name: /show form/i }));
+
+      expect(screen.queryByTestId("dev-tools")).not.toBeInTheDocument();
+      expect(screen.getByTestId("alarm-card")).toBeInTheDocument();
+    });
   });
 });

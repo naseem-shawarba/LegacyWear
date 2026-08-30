@@ -57,6 +57,7 @@ export const Home = () => {
         isConnected={isConnected}
         isSyncing={isSyncing}
         isPairing={isPairing}
+        isDisabled
         isListeningToGestures={isListeningToGestures}
         onClick={handleDeviceOverviewClick}
         onGestureBtnClick={handleGestureBtnClick}

@@ -9,6 +9,7 @@ type DeviceInfoProps = {
   isConnected: boolean;
   isSyncing: boolean;
   isPairing: boolean;
+  isDisabled?: boolean;
   isListeningToGestures?: boolean;
   showLoadingSpinner?: boolean;
   onClick: () => void;
@@ -20,6 +21,7 @@ export const DeviceOverview = ({
   isConnected,
   isSyncing,
   isPairing,
+  isDisabled = false,
   isListeningToGestures,
   onClick,
   onGestureBtnClick,
@@ -50,14 +52,19 @@ export const DeviceOverview = ({
     ? `${actionText} to refresh`
     : `${actionText} to connect`;
 
-  const isDisabled = isPairing || isSyncing;
+  const isBusy = isPairing || isSyncing;
+  const shouldDisable = isDisabled || isBusy;
 
+  const handleClick = () => {
+    if (shouldDisable) return;
+    onClick();
+  };
   return (
     <div
       role="button"
-      tabIndex={isDisabled ? -1 : 0}
-      className={`${styles.deviceInfoContainer} ${styles.clickable} ${isDisabled ? styles.disabled : ""}`}
-      onClick={onClick}
+      tabIndex={shouldDisable ? -1 : 0}
+      className={`${styles.deviceInfoContainer} ${styles.clickable} ${shouldDisable ? styles.disabled : ""}`}
+      onClick={handleClick}
     >
       {isSyncing && <div className={styles.syncingSpinner}></div>}
       <div
@@ -82,7 +89,7 @@ export const DeviceOverview = ({
         <GestureButton
           onClick={onGestureBtnClick}
           isListeningToGestures={isListeningToGestures}
-          isDisabled={isDisabled || !isConnected}
+          isDisabled={shouldDisable || !isConnected}
         />
       </div> */}
     </div>

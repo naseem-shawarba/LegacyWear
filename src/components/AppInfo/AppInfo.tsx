@@ -34,9 +34,24 @@ export const AppInfo = () => {
       </p>
 
       <p>
-        Legacy Wear does{" "}
-        <strong>not collect, store, or share personal data</strong>. All data
-        remains on your device.
+        This project is hosted on Google Firebase. For details, see{" "}
+        <a href="https://firebase.google.com/support/privacy">
+          Firebase's Privacy & Security Documentation
+        </a>
+        .
+      </p>
+      <p>
+        It uses <a href="https://www.goatcounter.com/">GoatCounter</a> for
+        aggregated, privacy-friendly analytics. For details, see{" "}
+        <a href="https://www.goatcounter.com/help/privacy">
+          GoatCounter's Privacy Policy
+        </a>
+        .
+      </p>
+      <p>
+        Beyond the above, this project does not collect any personally
+        identifiable information (PII) from visitors, nor does it use cookies or
+        tracking technologies that identify individual users.
       </p>
 
       <p>

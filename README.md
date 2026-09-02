@@ -133,7 +133,11 @@ The goal is to build a sustainable, community-maintained compatibility layer for
 
 ## Analytics & Privacy
 
-This project uses [GoatCounter](https://www.goatcounter.com/) to log page views and aggregate basic, anonymous metrics e.g. weekly visitor counts. No personally identifiable information (PII) is ever collected.
+This project is hosted on Google Firebase. For details, see [Firebase's Privacy & Security Documentation](https://firebase.google.com/support/privacy).
+
+It uses [GoatCounter](https://www.goatcounter.com/) for aggregated, privacy-friendly analytics. For details, see [GoatCounter's Privacy Policy](https://www.goatcounter.com/help/privacy).
+
+Beyond the above, this project does not collect any personally identifiable information (PII) from visitors, nor does it use cookies or tracking technologies that identify individual users.
 
 ## Disclaimer
 

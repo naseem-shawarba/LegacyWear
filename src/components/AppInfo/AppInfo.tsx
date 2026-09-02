@@ -49,7 +49,7 @@ export const AppInfo = () => {
         For a full list of supported devices and compatibility details, please
         refer to the project’s{" "}
         <a
-          href="https://github.com/naseem-shawarba/LegacyWear#supported-devices"
+          href="https://github.com/naseem-shawarba/legacy-wear#supported-devices"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -96,7 +96,7 @@ export const AppInfo = () => {
       <p>
         Licensed under GNU AGPLv3. Source code and license terms available on{" "}
         <a
-          href="https://github.com/naseem-shawarba/LegacyWear"
+          href="https://github.com/naseem-shawarba/legacy-wear"
           target="_blank"
           rel="noopener noreferrer"
         >

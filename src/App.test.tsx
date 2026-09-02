@@ -43,7 +43,7 @@ describe("App", () => {
       ).toBeInTheDocument();
 
       const githubLink = document.querySelector(
-        'a[href="https://github.com/naseem-shawarba/LegacyWear"]',
+        'a[href="https://github.com/naseem-shawarba/legacy-wear"]',
       );
       const redditLink = document.querySelector(
         'a[href="https://www.reddit.com/user/shinysn0w/"]',

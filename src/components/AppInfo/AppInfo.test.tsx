@@ -13,7 +13,7 @@ describe("AppInfo", () => {
       screen.getByRole("link", { name: /readme on github/i }),
     ).toHaveAttribute(
       "href",
-      "https://github.com/naseem-shawarba/LegacyWear#supported-devices",
+      "https://github.com/naseem-shawarba/legacy-wear#supported-devices",
     );
     expect(
       screen.getByRole("link", { name: /web bluetooth/i }),

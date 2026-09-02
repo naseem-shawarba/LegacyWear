@@ -28,7 +28,7 @@ const AppContent = () => {
         <span>Developed by Naseem Shawarba</span>
         <a
           target="_blank"
-          href="https://github.com/naseem-shawarba/LegacyWear"
+          href="https://github.com/naseem-shawarba/legacy-wear"
           rel="noopener noreferrer"
         >
           <FaGithub className="icon" />
